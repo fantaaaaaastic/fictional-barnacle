@@ -1,0 +1,136 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+int personnumber;
+struct information{
+    int ID;
+    char username[12];
+    int income;
+    int expense;
+}
+;
+struct information infor[11];
+void IDINFOR(int n){
+    for(int i=0;i<n;i++){
+        scanf("%d",&infor[i].ID);
+        scanf("%s",&infor[i].username);
+        scanf("%d",&infor[i].income);
+        scanf("%d",&infor[i].expense);
+    }
+}
+void standardoutput(int n){
+    int i,j;
+    int th[11];
+    printf("ID\tUserName\tIncome\tExpenses\n");
+    for(i = 1;i <= n;i++)
+    th[i] = i;
+    for(i = 1;i <= n;i++)
+    {
+        for(j = i+1;j <= n;j++)
+        {
+            if(strcmp(infor[th[i]].username,infor[th[j]].username) < 0)
+            {
+                int temp = th[i];
+                th[i] = th[j];
+                th[j] = temp;
+            }
+        }
+    }
+    for(i = 1;i <= n;i++)
+    {
+        printf("%s\t%s\t%d\t%d\n",infor[th[i]].ID,infor[th[i]].username,infor[th[i]].income,infor[th[i]].expense);
+    }
+}
+void usercheck(char* name)
+{
+    int flag=0;
+    for(int i=0;i<personnumber;i++){
+        if(strcmp(name,infor[i].username)==0){
+            printf("ID\tUserName\tIncome\tExpenses\n");
+            printf("%d\t%s\t%d\t%d\n",infor[i].ID,infor[i].username,infor[i].income,infor[i].expense);
+            flag = 1;
+            break;
+        }
+    }
+    if(flag==0){
+        printf("Not Found");
+    }
+}
+void averinen(){
+    int sumincome=0,sumexpense=0;
+    double averincome,averexpense;
+    for(int i=0;i<personnumber;i++){
+        sumincome=sumincome+infor[i].income;
+        sumexpense=sumexpense+infor[i].expense;
+    }
+    averincome=(double)sumincome/personnumber;
+    averexpense=(double)sumexpense/personnumber;
+    printf("Per capita income:%f",averincome);
+    printf("Per capita expenses:%f",averexpense);
+}
+void outputfuge(){
+    int sumexpense=0;
+    double averexpense;
+    for(int i=0;i<personnumber;i++){
+        sumexpense=sumexpense+infor[i].expense;
+    }
+    averexpense=(double)sumexpense/personnumber;
+    for(int m=0;m<personnumber;m++){
+        if(infor[m].expense>averexpense){
+            printf("%d\t%s\t%d\t%d\n",infor[m].ID,infor[m].username,infor[m].income,infor[m].expense);
+        }
+    }
+}
+void outputalluser(){
+    for(int i=0;i<personnumber;i++){
+        printf("%s\t%s\t%d\t%d\n",infor[i].ID,infor[i].username,infor[i].income,infor[i].expense);
+    }
+}
+int main (void){
+    char *name;
+    int choosenumber;
+    while(1){
+        printf("1.Input record\n"
+        "2.Sort and list records in reverse order by user name\n"
+        "3.Search records by user name\n"
+        "4.Calculate and list per capita income and expenses\n"
+        "5.List records which have more expenses than per capita expenses\n"
+        "6.List all records\n"
+        "0.Exit\n"
+        "   Please enter your choice:");
+        scanf("%d",&choosenumber);
+        if(choosenumber>=7||choosenumber<0){
+            printf("请输入正确的选项");
+            continue;
+        }
+        switch(choosenumber)
+        {
+            case 1:
+            printf("请输入用户人数：");
+            scanf("%d",&personnumber);
+            IDINFOR(personnumber);
+            break;
+            case 2:
+            standardoutput(personnumber);
+            break;
+            case 3:
+            printf("Please input the user name:");
+            scanf("%s",*name);
+            usercheck(name);
+            break;
+            case 4:
+            averinen();
+            break;
+            case 5:
+            outputfuge();
+            break;
+            case 6:
+            outputalluser();
+            break;
+            case 0:
+            printf("退出系统");
+            exit(0);
+        }
+    }
+    return 0;
+}
