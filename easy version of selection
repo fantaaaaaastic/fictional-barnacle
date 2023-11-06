@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+struct Candidate {
+    char name[6];
+    int NumofTicket;
+};
+
+int main() {
+    struct Candidate candidates[3];
+    char inputName[10];
+    int invalidVotes = 0;
+
+    // 初始化候选人姓名和得票数
+    strcpy(candidates[0].name, "zhang");
+    candidates[0].NumofTicket = 0;
+
+    strcpy(candidates[1].name, "li");
+    candidates[1].NumofTicket = 0;
+
+    strcpy(candidates[2].name, "wang");
+    candidates[2].NumofTicket = 0;
+
+    for (int i = 0; i < 10; i++) { // 假设有10个选民
+        printf("请输入您的投票选择:");
+        gets(inputName);
+
+        // 将输入的候选人姓名转换为小写以便不区分大小写比较
+        for (int j = 0; inputName[j]; j++) {
+            inputName[j] = tolower(inputName[j]);
+        }
+
+        int validVote = 0;
+
+        for (int j = 0; j < 3; j++) {
+            if (strcmp(inputName, candidates[j].name) == 0) {
+                candidates[j].NumofTicket++;
+                validVote = 1;
+                break;
+            }
+        }
+
+        if (!validVote) {
+            invalidVotes++;
+        }
+    }
+
+    printf("候选人得票情况:\n");
+    for (int j = 0; j < 3; j++) {
+        printf("%s: %d\n", candidates[j].name, candidates[j].NumofTicket);
+    }
+    printf("废票情况: %d\n", invalidVotes);
+
+    return 0;
+}
