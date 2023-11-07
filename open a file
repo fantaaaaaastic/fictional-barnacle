@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    FILE *sourceFile, *destinationFile;
+    char sourceFileName[100], destinationFileName[100];
+    char ch;
+
+    // 输入已存在的文件名
+    printf("请输入已存在的文本文件的文件名：");
+    scanf("%s", sourceFileName);
+
+    // 打开已存在的文件
+    sourceFile = fopen(sourceFileName, "r");
+    if (sourceFile == NULL) {
+        printf("无法打开已存在的文件。\n");
+        exit(1);
+    }
+
+    // 输入新文本文件的文件名
+    printf("请输入新文本文件的文件名：");
+    scanf("%s", destinationFileName);
+
+    // 打开新文本文件以便写入
+    destinationFile = fopen(destinationFileName, "w");
+    if (destinationFile == NULL) {
+        printf("无法创建新文本文件。\n");
+        fclose(sourceFile);
+        exit(1);
+    }
+
+    // 逐字符从已存在的文件读取内容并写入新文本文件
+    while ((ch = fgetc(sourceFile)) != EOF) {
+        fputc(ch, destinationFile);
+    }
+
+    // 关闭文件
+    fclose(sourceFile);
+    fclose(destinationFile);
+
+    printf("文件复制完成。\n");
+
+    return 0;
+}
