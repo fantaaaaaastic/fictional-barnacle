@@ -1,0 +1,183 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+int personnumber;
+struct information {
+    int ID;
+    char username[12];
+    int income;
+    int expense;
+};
+struct information infor[11];
+//函数功能：输入用户信息
+//函数入口参数：输入的用户个数n
+void IDINFOR(int n) {
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &infor[i].ID);
+        scanf("%s", infor[i].username);
+        scanf("%d", &infor[i].income);
+        scanf("%d", &infor[i].expense);
+    }
+}
+//函数功能：按用户名的字典序排列后输出用户记账信息
+//函数入口参数：输入的用户个数n
+void standardoutput(int n) {
+    int i, j;
+    int th[11];
+    printf("ID\tUserName\tIncome\tExpenses\n");
+    for (i = 1; i <= n; i++)
+        th[i] = i;
+    for (i = 1; i <= n; i++) {
+        for (j = i + 1; j <= n; j++) {
+            if (strcmp(infor[th[i]].username, infor[th[j]].username) > 0) {
+                int temp = th[i];
+                th[i] = th[j];
+                th[j] = temp;
+            }
+        }
+    }
+    for (i = 1; i <= n; i++) {
+        printf("%d\t%s\t%d\t%d\n", infor[th[i]].ID, infor[th[i]].username, infor[th[i]].income, infor[th[i]].expense);
+    }
+}
+//函数功能：使用用户名查找特定用户的记账信息
+//函数入口参数：输入的用户名name字符串指针
+void usercheck(char* name) {
+    int flag = 0;
+    for (int i = 0; i < personnumber; i++) {
+        if (strcmp(name, infor[i].username) == 0) {
+            printf("ID\tUserName\tIncome\tExpenses\n");
+            printf("%d\t%s\t%d\t%d\n", infor[i].ID, infor[i].username, infor[i].income, infor[i].expense);
+            flag = 1;
+            break;
+        }
+    }
+    if (flag == 0) {
+        printf("Not Found\n");
+    }
+}
+//函数功能：计算并输出所有用户的人均收入和人均支出
+void averinen() {
+    int sumincome = 0, sumexpense = 0;
+    double averincome, averexpense;
+    for (int i = 0; i < personnumber; i++) {
+        sumincome = sumincome + infor[i].income;
+        sumexpense = sumexpense + infor[i].expense;
+    }
+    averincome = (double)sumincome / personnumber;
+    averexpense = (double)sumexpense / personnumber;
+    printf("Per capita income: %f\n", averincome);
+    printf("Per capita expenses: %f\n", averexpense);
+}
+//函数功能：输出所有支出大于平均支出的用户记账信息
+void outputfuge() {
+    int sumexpense = 0;
+    double averexpense;
+    for (int i = 0; i < personnumber; i++) {
+        sumexpense = sumexpense + infor[i].expense;
+    }
+    averexpense = (double)sumexpense / personnumber;
+    for (int m = 0; m < personnumber; m++) {
+        if (infor[m].expense > averexpense) {
+            printf("%d\t%s\t%d\t%d\n", infor[m].ID, infor[m].username, infor[m].income, infor[m].expense);
+        }
+    }
+}
+//函数功能：输出系统中所有的记账信息
+void outputalluser() {
+    for (int i = 0; i < personnumber; i++) {
+        printf("%d\t%s\t%d\t%d\n", infor[i].ID, infor[i].username, infor[i].income, infor[i].expense);
+    }
+}
+//函数功能：将每个用户的记账系统写入文件
+//函数入口参数：用户个数n
+void getfile(int n) {
+    FILE* fp;
+    fp = fopen("useraccount.txt", "w");
+    if (fp == NULL) {
+        printf("creating default");
+        exit(1);
+    }
+    else {
+        for (int i = 0; i < n; i++) {
+            fprintf(fp, "%d\t%s\t%d\t%d\n", infor[i].ID, infor[i].username, infor[i].income, infor[i].expense);
+        }
+        printf("Save Successfully!\n");
+    }
+    fclose(fp);
+}
+//函数功能：读取文件中的记账信息并显示
+//函数入口参数：用户个数n
+void readfile(int n) {
+    FILE* fp;
+    fp = fopen("useraccount.txt", "r");
+    printf("ID\tUserName\tIncome\tExpenses\n");
+    if(fp==NULL){
+        printf("open default");
+    }
+    for (int i = 0; i < n; i++) {
+        fscanf(fp, "%d", &infor[i].ID);
+        fscanf(fp, "%s", infor[i].username);
+        fscanf(fp, "%d", &infor[i].income);
+        fscanf(fp, "%d", &infor[i].expense);
+    }
+     for (int i = 1; i <= n; i++) {
+        printf("%d\t%s\t%d\t%d\n", infor[i].ID, infor[i].username, infor[i].income, infor[i].expense);
+    }
+    fclose(fp);
+}
+int main(void) {
+    char name[12];
+    int choosenumber;
+    while (1) {
+        printf("1.Input record\n"
+            "2.Sort and list records in alphabetical order by user name\n"
+            "3.Search records by user name\n"
+            "4.Calculate and list per capita income and expenses\n"
+            "5.List records which have more expenses than per capita expenses\n"
+            "6.List all records\n"
+            "7.Write to file\n"
+            "8.Read from file\n"
+            "0.Exit\n"
+            "Please enter your choice: ");
+        scanf("%d", &choosenumber);
+        if (choosenumber >= 9 || choosenumber < 0) {
+            printf("请输入正确的选项\n");
+            continue;
+        }
+        switch (choosenumber) {
+        case 1:
+            printf("请输入用户人数：");
+            scanf("%d", &personnumber);
+            IDINFOR(personnumber);
+            break;
+        case 2:
+            standardoutput(personnumber);
+            break;
+        case 3:
+            printf("Please input the user name: ");
+            scanf("%s", name);
+            usercheck(name);
+            break;
+        case 4:
+            averinen();
+            break;
+        case 5:
+            outputfuge();
+            break;
+        case 6:
+            outputalluser();
+            break;
+        case 7:
+            getfile(personnumber);
+            break;
+        case 8:
+            readfile(personnumber);
+            break;
+        case 0:
+            printf("退出系统\n");
+            exit(0);
+        }
+    }
+    return 0;
+}
